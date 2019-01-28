@@ -21,14 +21,3 @@ class TreeAsBin:
         self.key = key
         self.child = child
         self.sibling = sibling
-
-
-def tutoEx1():
-    C1 = TreeAsBin(3, TreeAsBin(-6, None, TreeAsBin(10)))
-    C2 = TreeAsBin(8, TreeAsBin(11, TreeAsBin(0, None, TreeAsBin(4)), 
-                                TreeAsBin(2, None, TreeAsBin(5))))
-    C3 = TreeAsBin(9)
-    C1.sibling = C2
-    C2.sibling = C3
-    return TreeAsBin(15, C1, None)
-    
