@@ -168,7 +168,7 @@ Breadth First Search
 """
 
 
-# first version: a "end level mark" (None) is add in the queue
+# first version: a "end level mark" (None) is added in the queue
 
 def bfs(T):
     #FIXME
