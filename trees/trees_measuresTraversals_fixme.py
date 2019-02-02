@@ -61,8 +61,16 @@ def heightasbin2(B):
 # Average External Depth (Profondeur moyenne externe)
 
 def __average_external_depth(T, depth=0):
-    #FIXME
-    pass
+    if T.nbchildren == 0:
+        return (depth, 1)
+    else:
+        depthsum = 0
+        nbl = 0
+        for i in range(T.nbchildren):
+            (s, n) = __average_external_depth(T.children[i], depth + 1)
+            depthsum += s
+            nbl += n
+        return (depthsum, nbl)
 
 def average_external_depth(T):
     (epl, nbl) = __average_external_depth(T)  
@@ -70,8 +78,18 @@ def average_external_depth(T):
 
 
 def __average_external_depth_bin(B, depth=0):
-    #FIXME
-    pass
+    if B.child is None:
+        return (depth, 1)
+    else:
+        depthsum = 0
+        nbl = 0
+        C = B.child
+        while B.child:
+            (s, n) = __average_external_depth(C, depth + 1)
+            depthsum += s
+            nbl += n
+            C = C.sibling
+        return (depthsum, nbl)
 
 def average_external_depth_bin(B):
     """
@@ -79,12 +97,17 @@ def average_external_depth_bin(B):
     """
     (epl, nbl) = __average_external_depth_bin(B)  
     return epl / nbl
-
-# bonus: usig the binary structure?           
+           
 def __average_external_depth_bin2(B, depth=0):
-    #FIXME
-    pass
-
+     if B.child:    # if B.child != None
+         (depthsum, nbl) = __average_external_depth_bin2(B.child, depth + 1)
+     else:
+         (depthsum, nbl) = (depth, 1)
+     if B.sibling:
+        (s, n) = __average_external_depth_bin2(B.sibling, depth)
+        depthsum += s
+        nbl += n
+     return (depthsum, nbl)
 
 def average_external_depth_bin2(B):
     """
@@ -99,23 +122,46 @@ Traversals
 """
 
 """
-Depth First Search (DFS)
+Depth First Search
 """
- # write DFS: insert preorder, intermediates and postorder
- 
+
+# simple DFS (without intermediate)
+
 def dfs(T):
-    #FIXME
-    pass
-        
+    print(T.key)    # preorder
+    for child in T.children:
+        dfs(child)
+    # postorder
+
 def dfsasbin(B):
-     #FIXME
-    pass
+    print(B.key)    # preorder
+    C = B.child
+    while C:
+        dfs(C)
+        C = C.sibling
+    # postorder
 
-#Bonus: and with the binary structure?
+# full dfs (with intermediate)        
 
-def dfsasbin2(B):
-    #FIXME
-    pass
+def dfs_full(T):
+    print(T.key)    # preorder
+    if T.nbchildren != 0:
+        for i in range(T.nbchildren - 1):
+            dfs(T.children[i])
+            # intermediate
+        dfs(T.children[T.nbchildren-1])
+    # postorder
+        
+def dfsasbin_full(B):
+    print(B.key) # preorder
+    if B.child != None:
+        child = B.child
+        while child.sibling != None:
+            dfsasbin(child)
+            child = child.sibling
+             # intermediate
+        dfsasbin(child)
+    # postorder
 
 """
 Breadth First Search
@@ -125,13 +171,10 @@ Breadth First Search
 # first version: a "end level mark" (None) is add in the queue
 
 def bfs(T):
-    """
-    returns the width of T
-    """
     #FIXME
     pass
 
-#second version: two queues + displays keys by levels...
+#second version: two queues
 
 def bfsasbin(B):
     #FIXME
