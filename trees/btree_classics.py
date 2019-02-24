@@ -64,25 +64,57 @@ def split(B, i):
     - B is a nonempty tree and its root is not a 2t-node.
     - The child i of B exists and its root is a 2t-node.
     '''
+    
+    L = B.children[i]
+    R = btree.BTree()
+    mid = B.degree-1
+    # keys
+    (L.keys, x, R.keys) = (L.keys[:mid], L.keys[mid], L.keys[mid+1:])
+    # children    
+    if L.children == []:
+        R.children = [] # useless L[:2] = [] if L is []!
+    else:   
+        (L.children, R.children) = (L.children[:mid+1], L.children[mid+1:])
+    # root            
+    B.keys.insert(i, x)
+    B.children.insert(i+1, R)
 
-    #FIXME
-    pass
+
 
 def __insert(B, x):
     '''
     conditions:
     - B is a nonempty tree 
     - its root is not a 2t-node
-    '''
-    #FIXME
-    pass
-
+    returns: True if the insertion occurs (only to make code clearer... not used!)
+    There is no need to return B, the root (the reference) does not change!
+    '''    
+    i = binarySearchPos(B.keys, x)
+    if i < B.nbkeys and B.keys[i] == x:
+        return False
+    elif B.children == []: # leaf
+        B.keys.insert(i, x)
+        return True
+    else:
+        if B.children[i].nbkeys == 2 * B.degree - 1:
+            if B.children[i].keys[B.degree-1] == x:
+                return False
+            split(B, i)
+            if x > B.keys[i]:
+                i += 1
+        return __insert(B.children[i], x)
+        
 def insert(B, x):
-    if B == None:
+    '''
+    inserts x in B (if not already in B)
+    returns B (needed: in case of new root!)
+    '''
+    
+    if B ==  None:        
         return btree.BTree([x])
     else:
-        #FIXME
-        pass
-
-
-    
+        if B.nbkeys == 2 * B.degree - 1:    # root split
+            B = btree.BTree([], [B])
+            split(B, 0)
+        __insert(B, x)
+        return B
